@@ -1,4 +1,4 @@
-# Eve
+# GarbanzoBean
 ## What am I?
 I am not a toaster, and I am a chess engine made 100% in rust.  
   
