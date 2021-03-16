@@ -9,5 +9,5 @@ edition = "2018"
 [dependencies]
 
 [[bin]]
-name = "learning"
+name = "Minimax"
 path = "./src/main.rs"

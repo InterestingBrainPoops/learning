@@ -1,7 +1,11 @@
 [package]
-name = "Chess"
+name = "chess"
 version = "0.1.0"
 authors = ["InterestingBrainPoops <satasiyahet@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+
+[[bin]]
+name = "chess"
+path = "./src/main.rs"
