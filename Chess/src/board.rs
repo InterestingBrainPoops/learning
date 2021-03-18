@@ -64,27 +64,43 @@ impl Board{
 					let color;
 					self.pieces.push(match x.to_lowercase().as_str() {
 						"r" => {
+							let cancastle;
+							if (input[2][0.into()] == 'K' && (row*8 + col) == 63) ||(input[2][]) {
+								cancastle = true;
+							} // kingside rook
 							Piece{
-								piece: PieceType::Rook(true),
+								piece: PieceType::Rook(cancastle),
 								color,
 								position : row*8 + col
 							}
 						},// rook logic
 						"b" => {
 							Piece{
-								piece: PieceType::Rook(true),
+								piece: PieceType::Bishop,
 								color,
 								position : row*8 + col
 							}
 						}, // bishop logic
 						"n" => {
-							
+							Piece{
+								piece: PieceType::Knight,
+								color,
+								position : row*8 + col
+							}
 						},// knight logic
 						"q" => {
-							
+							Piece{
+								piece: PieceType::Queen,
+								color,
+								position : row*8 + col
+							}
 						},// queen logic
 						"k" => {
-							
+							Piece{
+								piece: PieceType::King(true),
+								color,
+								position : row*8 + col
+							}
 						}, // king logic
 						"/" => {
 							col = 0;
