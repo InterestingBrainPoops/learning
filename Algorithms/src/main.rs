@@ -1,5 +1,6 @@
 fn fib(n : u128, index : &mut [u128]) -> u128{
-    if(index[n.into()] != 0){
+    let e : usize = n.into();
+    if(index[e] != 0){
         index[n.into()]
     }
     index[n.into()] = fib(n-1,  index) + fib(n-2, index);
