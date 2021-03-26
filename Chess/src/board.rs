@@ -11,7 +11,7 @@ pub struct Board {
 pub struct Piece {
     piece: PieceType,
     color: Color,
-    position: u8,
+    position: i8,
 }
 // Piece type (does this need more explanation)
 #[derive(Debug, Clone, Copy)]
@@ -32,7 +32,7 @@ pub enum Color {
 }
 pub struct Move {
     piece: Piece,           // the piece itself
-    move_by: u8,            // how much its moving by
+    move_by: i8,            // how much its moving by
     capture: Option<Piece>, // if capture put the captured piece here
     castle: Option<Piece>,  // if castling, put the rook here
     promote: Option<Piece>, // if promoted, to what piece.
@@ -45,14 +45,14 @@ impl Board {
         let input: Vec<&str> = fen.split(" ").collect();
         let fen = String::from(input[0]);
 		println!("{}", fen);
-        // king can always castle, unless it has moved from its inital position.
+        // king can always castle, unless it has moved from its initial position.
         // iff king and rook can castle, then and only then can they castle.
         let mut row = 0;
         let mut col = 0;
         for x in fen.split("") {
-            let parsed = u8::from_str(x);
+            let parsed = i8::from_str(x);
             match parsed {
-                Ok(moveby) => col += moveby,
+                Ok(move_by) => col += move_by,
                 Err(_) => {
                     let color: Color;
                     let mut out = Piece {
@@ -157,8 +157,8 @@ impl Board {
 							let mut rank = 0;
 							if input[3] != "-" {
 								for thing in input[3].split(""){
-									match thing.parse() {
-										Ok(num) => {canenpassant = Some(num); continue;},
+									match thing.parse::<u8>() {
+										Ok(num) => {canenpassant = Some(rank*8+num); continue;},
 										Err(_) => {},
 									};
 									match thing {
@@ -219,7 +219,9 @@ impl Board {
     }
     // makes a given move
     // removes taken pieces.
-    fn make_move(&self, the_move: Move) {}
+    fn make_move(&self, the_move: Move) {
+        let e = Move.
+    }
     // unmakes a given move
     // replaces pieces that were captured if necessary.
     fn unmake_move(&self, the_move: Move) {}
