@@ -1,5 +1,3 @@
-use std::ptr::eq;
-
 use crate::instruction::Opcode;
 
 pub struct VM {
@@ -34,7 +32,7 @@ impl VM {
     }
 
     fn execute_instruction(&mut self) -> bool {
-        if self.pc >= self.program.len() || self.pc < 0 {
+        if self.pc >= self.program.len() {
             return true;
         }
         match self.decode_opcode() {
