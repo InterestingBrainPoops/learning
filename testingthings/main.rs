@@ -1,9 +1,13 @@
 use std::thread;
 
 fn main() {
-  let threads = (0..25).iter().map(|_| thread::spawn(|| {
+  use std::{thread, time};
+
+  let timething = time::Duration::from_millis(30000);
+
+  let threads = (0..256).map(|_| thread::spawn(move || {
+    thread::sleep(timething);
     println!("Hello from thread");
-    //I forget how to sleep in rust
-  }).collect::<Vec<_>>();
+  })).collect::<Vec<_>>();
   for thread in threads { thread.join(); }
 }
