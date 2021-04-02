@@ -89,26 +89,31 @@ impl VM {
                 let reg1 = self.next_8_bits() as usize;
                 let reg2 = self.next_8_bits() as usize;
                 self.equality = self.registers[reg1] != self.registers[reg2];
+                self.pc += 1;
             }
             Opcode::GT => {
                 let reg1 = self.next_8_bits() as usize;
                 let reg2 = self.next_8_bits() as usize;
                 self.equality = self.registers[reg1] > self.registers[reg2];
+                self.pc += 1;
             }
             Opcode::LT => {
                 let reg1 = self.next_8_bits() as usize;
                 let reg2 = self.next_8_bits() as usize;
                 self.equality = self.registers[reg1] < self.registers[reg2];
+                self.pc += 1;
             }
             Opcode::GTQ => {
                 let reg1 = self.next_8_bits() as usize;
                 let reg2 = self.next_8_bits() as usize;
                 self.equality = self.registers[reg1] >= self.registers[reg2];
+                self.pc += 1;
             }
             Opcode::LTQ => {
                 let reg1 = self.next_8_bits() as usize;
                 let reg2 = self.next_8_bits() as usize;
                 self.equality = self.registers[reg1] <= self.registers[reg2];
+                self.pc += 1;
             }
             Opcode::JEQ => {
                 if self.equality {
@@ -250,5 +255,33 @@ mod tests {
         assert_eq!(test_vm.equality, true);
         test_vm.run_once();
         assert_eq!(test_vm.equality, false);
+    }
+    #[test]
+    fn test_opcode_neq() {
+        // test the NEQ opcode
+        let mut test_vm = VM::new();
+        // test both the true and false cases.
+
+        test_vm.registers[0] = 0;
+        test_vm.registers[1] = 1;
+        test_vm.program = vec![10, 0, 0, 0, 10, 1, 0, 0];
+        test_vm.run_once();
+        assert_eq!(test_vm.equality, false);
+        test_vm.run_once();
+        assert_eq!(test_vm.equality, true);
+    }
+    #[test]
+    fn test_opcode_lt() {
+        // test the EQ opcode
+        let mut test_vm = VM::new();
+        // test both the true and false cases.
+
+        test_vm.registers[0] = 0;
+        test_vm.registers[1] = 1;
+        test_vm.program = vec![15, 0, 0, 0, 15, 0, 1, 0];
+        test_vm.run_once();
+        assert_eq!(test_vm.equality, false);
+        test_vm.run_once();
+        assert_eq!(test_vm.equality, true);
     }
 }
