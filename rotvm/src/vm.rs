@@ -82,6 +82,8 @@ impl VM {
                 let reg1 = self.next_8_bits() as usize;
                 let reg2 = self.next_8_bits() as usize;
                 self.equality = self.registers[reg1] == self.registers[reg2];
+                println!("{}", self.equality);
+                self.pc += 1;
             }
             Opcode::NEQ => {
                 let reg1 = self.next_8_bits() as usize;
@@ -141,7 +143,8 @@ impl VM {
 #[cfg(test)]
 mod tests {
     use super::*;
-
+    // list of all opcodes:
+    //
     #[test]
     fn test_create_vm() {
         // test creating a VM.
@@ -233,5 +236,19 @@ mod tests {
         test_vm.program = vec![7, 0, 0, 0];
         test_vm.run_once();
         assert_eq!(test_vm.pc, 0);
+    }
+    #[test]
+    fn test_opcode_eq() {
+        // test the EQ opcode
+        let mut test_vm = VM::new();
+        // test both the true and false cases.
+
+        test_vm.registers[0] = 0;
+        test_vm.registers[1] = 1;
+        test_vm.program = vec![9, 0, 0, 0, 9, 1, 0, 0];
+        test_vm.run_once();
+        assert_eq!(test_vm.equality, true);
+        test_vm.run_once();
+        assert_eq!(test_vm.equality, false);
     }
 }
