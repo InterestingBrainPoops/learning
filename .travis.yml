@@ -1,0 +1,4 @@
+language: rust
+script: # go to the rotvm folder
+  - cd rotvm
+  - cargo test --verbose

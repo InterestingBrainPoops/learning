@@ -271,8 +271,22 @@ mod tests {
         assert_eq!(test_vm.equality, true);
     }
     #[test]
+    fn test_opcode_gt() {
+        // test the GT opcode
+        let mut test_vm = VM::new();
+        // test both the true and false cases.
+
+        test_vm.registers[0] = 0;
+        test_vm.registers[1] = 1;
+        test_vm.program = vec![14, 0, 0, 0, 14, 1, 0, 0];
+        test_vm.run_once();
+        assert_eq!(test_vm.equality, false);
+        test_vm.run_once();
+        assert_eq!(test_vm.equality, true);
+    }
+    #[test]
     fn test_opcode_lt() {
-        // test the EQ opcode
+        // test the LT opcode
         let mut test_vm = VM::new();
         // test both the true and false cases.
 
@@ -283,5 +297,21 @@ mod tests {
         assert_eq!(test_vm.equality, false);
         test_vm.run_once();
         assert_eq!(test_vm.equality, true);
+    }
+    #[test]
+    fn test_opcode_gtq() {
+        // test the LT opcode
+        let mut test_vm = VM::new();
+        // test both the true and false cases.
+
+        test_vm.registers[0] = 0;
+        test_vm.registers[1] = 1;
+        test_vm.program = vec![12, 1, 1, 0, 12, 1, 0, 0, 12, 0, 1, 0];
+        test_vm.run_once();
+        assert_eq!(test_vm.equality, true);
+        test_vm.run_once();
+        assert_eq!(test_vm.equality, true);
+        test_vm.run_once();
+        assert_eq!(test_vm.equality, false);
     }
 }
