@@ -1,21 +1,22 @@
 use crate::instruction::Opcode;
 
 pub struct VM {
-    registers: [i32; 32],
     pc: usize,
     program: Vec<u8>,
     remainder: u32,
     equality: bool,
+    registers: Vec<i32>,
 }
 
 impl VM {
     pub fn new() -> VM {
         VM {
-            registers: [0; 32],
+            
             program: vec![],
             pc: 0,
             remainder: 0,
             equality: false,
+            registers: vec![0;32],
         }
     }
     /// Loops as long as instructions can be executed.
@@ -47,35 +48,42 @@ impl VM {
                 return true;
             }
             Opcode::ADD => {
-                let register1 = self.registers[self.next_8_bits() as usize];
-                let register2 = self.registers[self.next_8_bits() as usize];
-                self.registers[self.next_8_bits() as usize] = register1 + register2;
+                let register1 = self.next_8_bits() as usize;
+                let register2 = self.next_8_bits() as usize;
+                let reg3 = self.next_8_bits() as usize;
+                self.registers[reg3] = self.registers[register1] + self.registers[register2];
             }
             Opcode::SUB => {
-                let register1 = self.registers[self.next_8_bits() as usize];
-                let register2 = self.registers[self.next_8_bits() as usize];
-                self.registers[self.next_8_bits() as usize] = register1 - register2;
+                let register1 = self.next_8_bits() as usize;
+                let register2 = self.next_8_bits() as usize;
+                let reg3 = self.next_8_bits() as usize;
+                self.registers[reg3] = self.registers[register1] - self.registers[register2];
             }
             Opcode::MUL => {
-                let register1 = self.registers[self.next_8_bits() as usize];
-                let register2 = self.registers[self.next_8_bits() as usize];
-                self.registers[self.next_8_bits() as usize] = register1 * register2;
+                let register1 = self.next_8_bits() as usize;
+                let register2 = self.next_8_bits() as usize;
+                let reg3 = self.next_8_bits() as usize;
+                self.registers[reg3] = self.registers[register1] * self.registers[register2];
             }
             Opcode::DIV => {
-                let register1 = self.registers[self.next_8_bits() as usize];
-                let register2 = self.registers[self.next_8_bits() as usize];
-                self.registers[self.next_8_bits() as usize] = register1 / register2;
-                self.remainder = (register1 % register2) as u32;
+                let register1 = self.next_8_bits() as usize;
+                let register2 = self.next_8_bits() as usize;
+                let reg3 = self.next_8_bits() as usize;
+                self.registers[reg3] = self.registers[register1] / self.registers[register2];
+                self.remainder = (self.registers[register1] % self.registers[register2]) as u32;
             }
             Opcode::JMP => {
-                self.pc = self.registers[self.next_8_bits() as usize] as usize; // jump to the target.
+                let reg1 = self.next_8_bits() as usize;
+                self.pc = self.registers[reg1] as usize; // jump to the target.
             }
             Opcode::JMPF => {
-                self.pc += self.registers[self.next_8_bits() as usize] as usize;
+                let reg1 = self.next_8_bits() as usize;
+                self.pc += self.registers[reg1] as usize;
                 // jump to the target.
             }
             Opcode::JMPB => {
-                self.pc -= self.registers[self.next_8_bits() as usize] as usize;
+                let reg1 = self.next_8_bits() as usize;
+                self.pc -= self.registers[reg1] as usize;
                 // jump to the target.
             }
             Opcode::EQ => {
@@ -117,7 +125,8 @@ impl VM {
             }
             Opcode::JEQ => {
                 if self.equality {
-                    self.pc = self.registers[self.next_8_bits() as usize] as usize;
+                    let reg1 = self.next_8_bits() as usize;
+                    self.pc = self.registers[reg1] as usize;
                     // jump to the target.
                 }
             }
@@ -225,8 +234,11 @@ mod tests {
         // test the DIV opcode
         let mut test_vm = VM::new();
         // load 4 and 3 into the 0 and 1 registers. divide them and output to the 2 register.
-        test_vm.program = vec![0, 0, 0, 4, 0, 1, 0, 3, 4, 0, 1, 2];
+        test_vm.registers[0] = 4;
+        test_vm.registers[1] = 3;
+        test_vm.program = vec![4, 0, 1, 2];
         test_vm.run();
+        println!("{}", test_vm.remainder);
         println!("{:?}", test_vm.registers);
         assert_eq!(test_vm.registers[2], 1);
         assert_eq!(test_vm.remainder, 1);
