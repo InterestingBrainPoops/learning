@@ -1,11 +1,12 @@
 use crate::instruction::Opcode;
 
 pub struct VM {
-    pc: usize,
-    program: Vec<u8>,
-    remainder: u32,
-    equality: bool,
-    registers: Vec<i32>,
+    pc: usize, // the current program position, gets changed with each jump and instruction read.
+    program: Vec<u8>, // stores the program
+    remainder: u32, // stores the remainder for any division that occurs 
+    equality: bool, // stores the output of the equality checks
+    registers: [i32;32], // the cpu registers, size is known at compile time
+    heap : Vec<u8>, // the heap.
 }
 
 impl VM {
@@ -16,7 +17,8 @@ impl VM {
             pc: 0,
             remainder: 0,
             equality: false,
-            registers: vec![0;32],
+            registers: [0;32],
+            heap: vec![],
         }
     }
     /// Loops as long as instructions can be executed.
@@ -130,11 +132,18 @@ impl VM {
                     // jump to the target.
                 }
             }
+            Opcode::ALOC => {
+                let reg1 = self.next_8_bits() as usize;
+                let bytes = self.registers[reg1];
+                let new_end = self.heap.len() as i32+ bytes;
+                self.heap.resize(new_end as usize,0);
+            }
             Opcode::IGL => {
                 // handle illegal opcodes
                 println!("IGL opcode reached");
                 return true;
             }
+            
         }
         false
     }

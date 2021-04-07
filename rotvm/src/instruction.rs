@@ -11,12 +11,14 @@ pub enum Opcode {
     NEQ,  // EQ but not
     JEQ,  // jumps if eq bool.
     GTQ,  // greater than or equal to and outputs to the equality bool
-    LTQ,  // GEQ but less.
-    LT,
-    GT,
+    LTQ,  // GTQ but less.
+    LT,   // Less than
+    GT,   // Greater than
     MUL,  // ADD but multiply.
     JMPB, // jump back
     JMPF, // jump forwards
+    ALOC, // ALOCate memory in the heap.
+    SPWN, // Spawn a strand
 }
 
 #[derive(Debug, PartialEq)]
@@ -43,6 +45,7 @@ impl From<u8> for Opcode {
             13 => Opcode::LTQ,
             14 => Opcode::GT,
             15 => Opcode::LT,
+            16 => Opcode::ALOC,
             _ => Opcode::IGL,
         }
     }
