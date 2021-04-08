@@ -7,6 +7,7 @@ pub struct VM {
     equality: bool, // stores the output of the equality checks
     registers: [i32;32], // the cpu registers, size is known at compile time
     heap : Vec<u8>, // the heap.
+    programs : Vec<(bool, usize)>, // the programs, explained more in the docs.
 }
 
 impl VM {
@@ -19,6 +20,7 @@ impl VM {
             equality: false,
             registers: [0;32],
             heap: vec![],
+            programs: vec![],
         }
     }
     /// Loops as long as instructions can be executed.
