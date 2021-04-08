@@ -18,7 +18,9 @@ pub enum Opcode {
     JMPB, // jump back
     JMPF, // jump forwards
     ALOC, // ALOCate memory in the heap.
-    SPWN, // Spawn a strand
+    SPWN, // Spawn a strand at the given 
+    JOIN, // End the execution of the strand. Works on the main strand, so be careful.
+    EXIT, // Clears all strands except for the main strand. Useful for tear down.
 }
 
 #[derive(Debug, PartialEq)]
@@ -46,6 +48,9 @@ impl From<u8> for Opcode {
             14 => Opcode::GT,
             15 => Opcode::LT,
             16 => Opcode::ALOC,
+            17 => Opcode::SPWN,
+            18 => Opcode::JOIN,
+            19 => Opcode::EXIT,
             _ => Opcode::IGL,
         }
     }

@@ -138,6 +138,15 @@ impl VM {
                 let new_end = self.heap.len() as i32+ bytes;
                 self.heap.resize(new_end as usize,0);
             }
+            Opcode::SPWN => {
+                
+            }
+            Opcode::JOIN => {
+
+            }
+            Opcode::EXIT => {
+
+            }
             Opcode::IGL => {
                 // handle illegal opcodes
                 println!("IGL opcode reached");
