@@ -1,7 +1,7 @@
 #[derive(Debug, PartialEq)]
 pub enum Opcode {
-    HLT,
-    IGL,
+    HLT,  // Halt program execution
+    IGL,  // Illegal opcode
     LOAD, // load memory
     ADD,  // add to addresses and output to 1 address
     SUB,  // add but subtract
@@ -18,7 +18,7 @@ pub enum Opcode {
     JMPB, // jump back
     JMPF, // jump forwards
     ALOC, // ALOCate memory in the heap.
-    SPWN, // Spawn a strand at the given 
+    SPWN, // Spawn a strand at the given
     JOIN, // End the execution of the strand. Works on the main strand, so be careful.
     EXIT, // Clears all strands except for the main strand. Useful for tear down.
 }
