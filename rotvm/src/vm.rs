@@ -57,7 +57,9 @@ impl VM {
             Opcode::LOAD => {
                 println!("reached load");
                 let register = self.next_8_bits(strand) as usize;
+                println!("{}", register);
                 let number = self.next_16_bits(strand) as u32;
+                println!("{:?}", number);
                 self.registers[register] = number as i32;
             }
             Opcode::HLT => {
@@ -166,19 +168,36 @@ impl VM {
         false
     }
     fn next_8_bits(&mut self, strand: &Strand) -> u8 {
-        let result = self.program[strand.pc];
-        self.increment_pc(strand.pid, 1);
-        result
+        
+        for x in &mut self.programs {
+            if x.pid == strand.pid {
+                let result = self.program[x.pc];
+                self.increment_pc(strand.pid, 1);
+                return result;
+            }
+        }
+        panic!("looked for a PID in the running strands, couldnt find PID #{}", strand.pid);
     }
     fn next_16_bits(&mut self, strand: &Strand) -> u16 {
-        let result = ((self.program[strand.pc] as u16) << 8) | self.program[strand.pc + 1] as u16;
-        self.increment_pc(strand.pid, 2);
-        result
+        for x in &mut self.programs {
+            if x.pid == strand.pid {
+                let result = ((self.program[x.pc] as u16) << 8) | self.program[x.pc + 1] as u16;
+                x.pc += 2;
+                return result;
+            }
+        }
+        panic!("looked for a PID in the running strands, couldnt find PID #{}", strand.pid);
     }
     fn decode_opcode(&mut self, strand: &Strand) -> Opcode {
-        let opcode = Opcode::from(self.program[strand.pc]);
-        self.increment_pc(strand.pid, 1);
-        opcode
+        for x in &mut self.programs {
+            if x.pid == strand.pid {
+                let opcode = Opcode::from(self.program[x.pc]);
+                self.increment_pc(strand.pid, 1);
+                return opcode;
+            }
+        }
+        panic!("looked for a PID in the running strands, couldnt find PID #{}", strand.pid);
+        
     }
     fn increment_pc(&mut self, pid: u32, inc: i32) {
         for x in &mut self.programs {

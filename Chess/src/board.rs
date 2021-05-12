@@ -1,9 +1,16 @@
-use std::str::FromStr;
 
-// Chess board
+// Chess board 
+// each one has a list of 3 u64, each a bitboard. 
+// [black, white, both]
 #[derive(Debug)]
 pub struct Board {
-    pub pieces: Vec<Piece>,
+    zobrist : u64, // zobrist hash, starts at 0.
+    bishop : [u64;3], // Bishop positions
+    king : [u64;3], // King positions
+    queen : [u64;3], // Queen positions 
+    knight : [u64;3], // Knight positions
+    rook : [u64;3], // Rook positions
+    pawn : [u64;3],
     pub turn: Color,
 }
 // Piece implementation/ representation
@@ -39,177 +46,22 @@ pub struct Move {
 }
 
 impl Board {
+    // constructor
+    pub fn new() -> Board{
+        Board{
+            zobrist : 0,
+            bishop : [0;3],
+            king : [0;3],
+            knight : [0;3],
+            queen : [0;3],
+            rook : [0;3],
+            pawn : [0;3],
+            turn : Color::White,
+        }
+    }
     // sets the board to the fen string
     pub fn from_fen(&mut self, fen: &String) {
-        // split the FEN into is constituent parts.
-        let input: Vec<&str> = fen.split(" ").collect();
-        let fen = String::from(input[0]);
-		println!("{}", fen);
-        // king can always castle, unless it has moved from its initial position.
-        // iff king and rook can castle, then and only then can they castle.
-        let mut row = 0;
-        let mut col = 0;
-        for x in fen.split("") {
-            let parsed = i8::from_str(x);
-            match parsed {
-                Ok(move_by) => col += move_by,
-                Err(_) => {
-                    let color: Color;
-                    let mut out = Piece {
-                        piece: PieceType::Empty,
-                        color: Color::Black,
-                        position: 3,
-                    };
-                    match x.to_lowercase().as_str() {
-                        "r" => {
-                            let can_castle;
-                            // color logic
-                            // Check the case of x.
-                            if x == "R" {
-                                color = Color::White;
-                            } else {
-                                color = Color::Black;
-                            }
-
-                            match row * 8 + col {
-                                // can castle logic
-                                0 => {
-                                    if input[2].contains("q") {
-                                        can_castle = true;
-                                    } else {
-                                        can_castle = false;
-                                    }
-                                }
-                                56 => {
-                                    if input[2].contains("Q") {
-                                        can_castle = true;
-                                    } else {
-                                        can_castle = false;
-                                    }
-                                }
-                                63 => {
-                                    if input[2].contains("K") {
-                                        can_castle = true;
-                                    } else {
-                                        can_castle = false;
-                                    }
-                                }
-                                7 => {
-                                    if input[2].contains("k") {
-                                        can_castle = true;
-                                    } else {
-                                        can_castle = false;
-                                    }
-                                }
-                                _ => {
-                                    can_castle = false;
-                                }
-                            }
-                            out = Piece {
-                                piece: PieceType::Rook(can_castle),
-                                color: color.clone(),
-                                position: row * 8 + col,
-                            };col += 1;
-                        } // rook logic
-                        "b" => {
-                            if x == "B" {
-                                color = Color::White;
-                            } else {
-                                color = Color::Black;
-                            }
-                            out = Piece {
-                                piece: PieceType::Bishop,
-                                color,
-                                position: row * 8 + col,
-                            };col += 1;
-                        } // bishop logic
-                        "n" => {
-                            if x == "N" {
-                                color = Color::White;
-                            } else {
-                                color = Color::Black;
-                            }
-                            out = Piece {
-                                piece: PieceType::Knight,
-                                color,
-                                position: row * 8 + col,
-                            };col += 1;
-                        } // knight logic
-                        "q" => {
-                            if x == "Q" {
-                                color = Color::White;
-                            } else {
-                                color = Color::Black;
-                            }
-                            out = Piece {
-                                piece: PieceType::Queen,
-                                color,
-                                position: row * 8 + col,
-                            };col += 1;
-                        } // queen logic
-						"p" => {
-                            if x == "P" {
-                                color = Color::White;
-                            } else {
-                                color = Color::Black;
-                            }
-							let mut canenpassant = None;
-							let mut rank = 0;
-							if input[3] != "-" {
-								for thing in input[3].split(""){
-									match thing.parse::<u8>() {
-										Ok(num) => {canenpassant = Some(rank*8+num); continue;},
-										Err(_) => {},
-									};
-									match thing {
-										"a" => {rank = 0;}
-										"b" => {rank = 1;}
-										"c" => {rank = 2;}
-										"d" => {rank = 3;}
-										"e" => {rank = 4;}
-										"f" => {rank = 5;}
-										"g" => {rank = 6;}
-										"h" => {rank = 7;}
-										_ => {panic!("Invalid character. {}", thing)}
-									}
-								}
-							}
-                            out = Piece {
-                                piece: PieceType::Pawn(canenpassant),
-                                color,
-                                position: row * 8 + col,
-                            };col += 1;
-                        } // queen logic
-                        "k" => {
-                            if x == "K" {
-                                color = Color::White;
-                            } else {
-                                color = Color::Black;
-                            }
-                            out = Piece {
-                                piece: PieceType::King(true),
-                                color,
-                                position: row * 8 + col,
-                            };col += 1;
-                        } // king logic
-                        "/" => {
-                            col = 0;
-                            row += 1;
-                        } // end of line
-						"" =>{
-
-						}// nothing happens at end of string.
-                        _ => {
-                            panic!("Invalid char in FEN string : {}", x);
-                        }
-                    }
-					
-                    if !matches!(out.piece, PieceType::Empty) {
-                        self.pieces.push(out.clone());
-                    }
-                }
-            }
-        }
+    
     }
     // gets the valid moves for a given position
     // IDK how to do this yet
@@ -220,11 +72,12 @@ impl Board {
     // makes a given move
     // removes taken pieces.
     fn make_move(&self, the_move: Move) {
-        let e = Move.
     }
     // unmakes a given move
     // replaces pieces that were captured if necessary.
-    fn unmake_move(&self, the_move: Move) {}
+    fn unmake_move(&self, the_move: Move) {
+
+    }
     // checks if a state is an end state
     // if it is then return the color of winner as well.
     fn end(&self) -> (bool, Option<Color>) {
